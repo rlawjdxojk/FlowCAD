@@ -7,13 +7,15 @@
    - 시트 초과 판재 경고를 결과 상단과 Cut list 에 표시한다.
    - 시간 절감 지표·자재비에 "추정" 라벨을 붙인다(PRD 5장, 7장 4). */
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
-import { runDesign, kg, won, type DesignResult, type RawDesignForm, type ValidationError } from "./engine";
+import { buildModel3D, runDesign, kg, won, type DesignResult, type RawDesignForm, type ValidationError } from "./engine";
 import { CIRC_SIZES, INPUT_RANGES, RULE_CLEARANCE } from "./engine/rules";
 import { Blueprint } from "./ui/Blueprint";
+import { Viewer3D } from "./ui/Viewer3D";
 import { BomTable, CutList, Field, Metric, PurchaseOrder } from "./ui/Tables";
 import { useCountUp } from "./ui/useCountUp";
 
 type Tab = "bom" | "cut" | "po";
+type ViewTab = "3d" | "2d";
 
 // 초기 입력: 데모 FlowCADDemo.jsx:142 와 같음 (PRD 대표 시나리오)
 const INITIAL_FORM: RawDesignForm = { type: "roller", D: 700, W: 3500, H: 4000, drive: "manual", bays: 3, qty: 1 };
@@ -21,6 +23,7 @@ const INITIAL_FORM: RawDesignForm = { type: "roller", D: 700, W: 3500, H: 4000, 
 export default function App() {
   const [form, setForm] = useState<RawDesignForm>(INITIAL_FORM);
   const [tab, setTab] = useState<Tab>("bom");
+  const [viewTab, setViewTab] = useState<ViewTab>("3d");
   // 데모와 같은 변환: 빈칸은 "" 로 두고(검증에서 오류 처리), 숫자로 읽히면 숫자로 저장
   const set = (k: keyof RawDesignForm) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const v = e.target.value;
@@ -31,6 +34,7 @@ export default function App() {
   const lastValid = useRef<DesignResult | null>(null);
   if (run.ok) lastValid.current = run.result;
   const r = lastValid.current;
+  const model3d = useMemo(() => (r ? buildModel3D(r) : null), [r]);
   const errors: ValidationError[] = run.ok ? [] : run.errors;
   const errOf = (field: keyof RawDesignForm) => errors.find((e) => e.field === field)?.message;
 
@@ -101,8 +105,15 @@ export default function App() {
             {!run.ok && <div className="stale">입력 오류가 있어 아래 결과는 마지막으로 유효했던 입력 기준입니다.</div>}
 
             <section className="panel canvas-wrap">
-              <div className="panel-h light"><span className="step">02</span>설계 도면 자동 생성<span className="auto">{r.match}</span></div>
-              <Blueprint input={r.input} />
+              <div className="panel-h light">
+                <span className="step">02</span>설계 형상 자동 생성
+                <span className="vtabs">
+                  <button type="button" className={viewTab === "3d" ? "on" : ""} onClick={() => setViewTab("3d")}>3D 뷰</button>
+                  <button type="button" className={viewTab === "2d" ? "on" : ""} onClick={() => setViewTab("2d")}>2D 도면</button>
+                </span>
+                <span className="auto">{r.match}</span>
+              </div>
+              {viewTab === "3d" && model3d ? <Viewer3D model={model3d} lines={r.lines} /> : <Blueprint input={r.input} />}
             </section>
 
             <section className="metrics">

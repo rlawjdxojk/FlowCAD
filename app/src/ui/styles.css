@@ -69,3 +69,23 @@
 .est{display:inline-block;margin-left:6px;font-size:10px;font-weight:600;color:#fff;background:var(--steel);padding:0 5px;border-radius:2px;vertical-align:1px;}
 .tbl tr.over td{background:#FFF8E6;}
 .badge-over{display:inline-block;margin-left:6px;font-size:10px;font-weight:600;color:#A15C00;border:1px solid #F2D68A;background:#FFF3D6;padding:0 5px;border-radius:2px;}
+
+/* ── 3D 뷰어 ─────────────────────────────────────────── */
+.vtabs{display:inline-flex;gap:2px;margin-left:14px;background:#0c2233;border:1px solid #2c5168;border-radius:3px;padding:2px;}
+.vtabs button{font-family:inherit;font-size:11.5px;font-weight:600;color:#9DB4C2;background:none;border:none;padding:3px 10px;border-radius:2px;cursor:pointer;}
+.vtabs button.on{background:var(--amber);color:var(--ink);}
+.v3d{background:var(--blue);}
+.v3d-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid #1d4560;}
+.v3d-bar button{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 9px;border:1px solid #2c5168;background:#13283a;color:#9fc4d6;border-radius:3px;cursor:pointer;}
+.v3d-bar button.on{border-color:#3fc9e0;color:#3fc9e0;}
+.v3d-chk{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:#9fc4d6;margin-left:8px;cursor:pointer;}
+.v3d-count{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6f95a8;}
+.v3d-canvas{position:relative;height:520px;touch-action:none;}
+.v3d-info{position:absolute;left:12px;top:12px;max-width:340px;background:rgba(12,34,51,.88);border:1px solid #2c5168;border-radius:4px;padding:9px 11px;color:#cfe3ee;font-size:12px;pointer-events:none;}
+.v3d-info-h{font-weight:700;color:#3fc9e0;margin-bottom:5px;}
+.v3d-info-r{display:flex;gap:8px;line-height:1.55;}.v3d-info-r span{flex:0 0 34px;color:#6f95a8;}
+.v3d-info-r.dim{color:#6f95a8;}
+.v3d-info-hint{color:#9fc4d6;}
+.v3d-note{margin:0;padding:7px 12px 9px;font-size:11px;color:#6f95a8;border-top:1px solid #1d4560;}
+.v3d-empty{display:flex;align-items:center;justify-content:center;height:320px;color:#9fc4d6;font-size:13px;background:var(--blue);padding:20px;text-align:center;}
+@media(max-width:520px){.v3d-canvas{height:380px;}.v3d-info{max-width:calc(100% - 24px);}}

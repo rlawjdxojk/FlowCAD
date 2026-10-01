@@ -15,3 +15,5 @@ export function runDesign(raw: RawDesignForm): RunResult {
   if (!v.ok) return { ok: false, errors: v.errors };
   return { ok: true, result: computeDesign(v.input), errors: [] };
 }
+export { buildModel3D } from "./model3d";
+export type { Model3D, Part3D, Vec3, Axis } from "./model3d";
