@@ -1,0 +1,108 @@
+{
+  "id": "frp_circle_750_interp",
+  "primary": false,
+  "description": "FRP 원형 Ø750 (정척 사이 보간 문구)",
+  "source": {
+    "file": "../flowcad-demo/src/FlowCADDemo.jsx",
+    "lines": "13-140",
+    "sha256": "19c4656e7ef7d2a564fd4bfb2b74a28678c454433a63280bbf771c52d46b98ed",
+    "generator": "scripts/gen-demo-fixtures.mjs"
+  },
+  "form": {
+    "type": "frp_circle",
+    "D": 750,
+    "W": 3500,
+    "H": 4000,
+    "drive": "manual",
+    "bays": 3,
+    "qty": 1
+  },
+  "demoOutput": {
+    "isCirc": true,
+    "isFrpRect": false,
+    "isInteg": false,
+    "isRoller": false,
+    "isLift": false,
+    "match": "Ø700 기반 보간",
+    "lines": [
+      {
+        "name": "FRAME (문틀)",
+        "spec": "F.R.P + COATING",
+        "qty": 1,
+        "unit": "EA",
+        "price": 78726.34840355173,
+        "sup": "FRP성형",
+        "mat": "FRP"
+      },
+      {
+        "name": "DOOR ASS'Y (문짝)",
+        "spec": "F.R.P / Ø740",
+        "qty": 1,
+        "unit": "EA",
+        "price": 64412.46687563323,
+        "sup": "FRP성형",
+        "mat": "FRP"
+      },
+      {
+        "name": "FRAME / DOOR HINGE",
+        "spec": "STS304 / HINGE PIN Ø16~32",
+        "qty": 1,
+        "unit": "SET",
+        "price": 51040,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "SEAL PLATE",
+        "spec": "STS304 1.5T×Ø740",
+        "qty": 1,
+        "unit": "EA",
+        "price": 0,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "SEAL RUBBER",
+        "spec": "EPDM 4T×40",
+        "qty": 3,
+        "unit": "m",
+        "price": 9000,
+        "sup": "고무자재",
+        "mat": "EPDM"
+      },
+      {
+        "name": "BOLT/NUT (앵커)",
+        "spec": "STS304 M10×45L",
+        "qty": 20,
+        "unit": "세트",
+        "price": 1100,
+        "sup": "체결구",
+        "mat": "STS304"
+      }
+    ],
+    "cuts": [
+      {
+        "name": "SEAL PLATE",
+        "mat": "STS304",
+        "thk": 5,
+        "w": 190,
+        "l": 2356,
+        "ea": 1,
+        "kind": "plate",
+        "kgEach": 17.748926,
+        "sheets": 1,
+        "sheet": "1219×2438"
+      }
+    ],
+    "sheets": 1,
+    "scrapRate": 0.8493769351954729,
+    "plateKg": 17.748926,
+    "hasPlates": true,
+    "totalCost": 324823.874879185,
+    "partKinds": 6,
+    "existH": 10.10446616727766,
+    "saveRate": 0.9970310158395945,
+    "Q": 1,
+    "B": 3
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "id": "integ_1200x1800_motor_q3",
+  "primary": false,
+  "description": "일체식 전동 1200×1800, 3 SET",
+  "source": {
+    "file": "../flowcad-demo/src/FlowCADDemo.jsx",
+    "lines": "13-140",
+    "sha256": "19c4656e7ef7d2a564fd4bfb2b74a28678c454433a63280bbf771c52d46b98ed",
+    "generator": "scripts/gen-demo-fixtures.mjs"
+  },
+  "form": {
+    "type": "integ",
+    "D": 700,
+    "W": 1200,
+    "H": 1800,
+    "drive": "motor",
+    "bays": 3,
+    "qty": 3
+  },
+  "demoOutput": {
+    "isCirc": false,
+    "isFrpRect": false,
+    "isInteg": true,
+    "isRoller": false,
+    "isLift": false,
+    "match": "맞춤 W×H 즉시 생성",
+    "lines": [
+      {
+        "name": "GATE LEAF (문짝)",
+        "spec": "STS304 5T / 1200×1800",
+        "qty": 3,
+        "unit": "EA",
+        "price": 0,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "GUIDE FRAME (문틀)",
+        "spec": "STS304 채널 / 표준 프레임고",
+        "qty": 3,
+        "unit": "SET",
+        "price": 0,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "SPINDLE (스핀들)",
+        "spec": "STS304 Ø32×3,100L",
+        "qty": 3,
+        "unit": "EA",
+        "price": 119838,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "SPINDLE / STEM COVER",
+        "spec": "Ø76.3×3.2T PIPE",
+        "qty": 3,
+        "unit": "EA",
+        "price": 256680,
+        "sup": "배관자재",
+        "mat": "STS304"
+      },
+      {
+        "name": "전동 액추에이터",
+        "spec": "전동 개폐기 + 스핀들 Ø38",
+        "qty": 3,
+        "unit": "EA",
+        "price": 1450000,
+        "sup": "구동부품",
+        "mat": "전장"
+      },
+      {
+        "name": "HINGE BRACKET / STOPPER",
+        "spec": "STS304 / PIN Ø16×110L",
+        "qty": 3,
+        "unit": "SET",
+        "price": 28000,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "SEAL RUBBER",
+        "spec": "EPDM 4T×40",
+        "qty": 18,
+        "unit": "m",
+        "price": 9000,
+        "sup": "고무자재",
+        "mat": "EPDM"
+      },
+      {
+        "name": "CLAMP PLATE",
+        "spec": "STS304 4T×50",
+        "qty": 12,
+        "unit": "EA",
+        "price": 9000,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "BOLT/NUT (앵커)",
+        "spec": "STS304 M12×50L",
+        "qty": 135,
+        "unit": "세트",
+        "price": 1300,
+        "sup": "체결구",
+        "mat": "STS304"
+      }
+    ],
+    "cuts": [
+      {
+        "name": "GATE LEAF SKIN",
+        "mat": "STS304",
+        "thk": 5,
+        "w": 1200,
+        "l": 1800,
+        "ea": 3,
+        "kind": "plate",
+        "kgEach": 85.644,
+        "sheets": 3,
+        "sheet": "1219×2438"
+      },
+      {
+        "name": "보강 RIB",
+        "mat": "STS304",
+        "thk": 5,
+        "w": 40,
+        "l": 1200,
+        "ea": 21,
+        "kind": "plate",
+        "kgEach": 1.9032,
+        "sheets": 1,
+        "sheet": "1219×2438"
+      }
+    ],
+    "sheets": 4,
+    "scrapRate": 0.3701045989766891,
+    "plateKg": 296.8992,
+    "hasPlates": true,
+    "totalCost": 7374790.32,
+    "partKinds": 9,
+    "existH": 15.9,
+    "saveRate": 0.9981132075471698,
+    "Q": 3,
+    "B": 3
+  }
+}

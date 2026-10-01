@@ -1,0 +1,147 @@
+{
+  "id": "roller_2000x3000_b1",
+  "primary": false,
+  "description": "롤러게이트 2000×3000 1련 (SKIN 9T, 시트 내 판재 혼재)",
+  "source": {
+    "file": "../flowcad-demo/src/FlowCADDemo.jsx",
+    "lines": "13-140",
+    "sha256": "19c4656e7ef7d2a564fd4bfb2b74a28678c454433a63280bbf771c52d46b98ed",
+    "generator": "scripts/gen-demo-fixtures.mjs"
+  },
+  "form": {
+    "type": "roller",
+    "D": 700,
+    "W": 2000,
+    "H": 3000,
+    "drive": "manual",
+    "bays": 1,
+    "qty": 1
+  },
+  "demoOutput": {
+    "isCirc": false,
+    "isFrpRect": false,
+    "isInteg": false,
+    "isRoller": true,
+    "isLift": false,
+    "match": "맞춤 W×H 즉시 생성",
+    "lines": [
+      {
+        "name": "GATE LEAF (문비) ×1련",
+        "spec": "SS400 SKIN 9T / 2000×3000",
+        "qty": 1,
+        "unit": "EA",
+        "price": 0,
+        "sup": "철구조",
+        "mat": "SS400"
+      },
+      {
+        "name": "수평/수직 보강거더",
+        "spec": "SS400 / 5단",
+        "qty": 5,
+        "unit": "조",
+        "price": 52000,
+        "sup": "철구조",
+        "mat": "SS400"
+      },
+      {
+        "name": "MAIN ROLLER ASS'Y",
+        "spec": "STS 주물 롤러 + BEARING",
+        "qty": 8,
+        "unit": "EA",
+        "price": 185000,
+        "sup": "구동부품",
+        "mat": "STS304"
+      },
+      {
+        "name": "SIDE / GUIDE ROLLER",
+        "spec": "STS 가이드 롤러",
+        "qty": 8,
+        "unit": "EA",
+        "price": 95000,
+        "sup": "구동부품",
+        "mat": "STS304"
+      },
+      {
+        "name": "GUIDE RAIL (EMBED)",
+        "spec": "SS400 매립 레일 / 2×4.5m",
+        "qty": 2,
+        "unit": "본",
+        "price": 175500,
+        "sup": "철구조",
+        "mat": "SS400"
+      },
+      {
+        "name": "RACK BAR",
+        "spec": "STS304 랙바 / 4.5m",
+        "qty": 1,
+        "unit": "본",
+        "price": 637500,
+        "sup": "구동부품",
+        "mat": "STS304"
+      },
+      {
+        "name": "전동 권양기 (HOIST)",
+        "spec": "전동 권양기 + 감속기",
+        "qty": 1,
+        "unit": "SET",
+        "price": 3500000,
+        "sup": "구동부품",
+        "mat": "전장"
+      },
+      {
+        "name": "SEAL RUBBER",
+        "spec": "EPDM P/J-TYPE",
+        "qty": 10,
+        "unit": "m",
+        "price": 14000,
+        "sup": "고무자재",
+        "mat": "EPDM"
+      },
+      {
+        "name": "ANCHOR / EMBED",
+        "spec": "SS400 매립철물 세트",
+        "qty": 1,
+        "unit": "SET",
+        "price": 180000,
+        "sup": "철구조",
+        "mat": "SS400"
+      }
+    ],
+    "cuts": [
+      {
+        "name": "SKIN PLATE",
+        "mat": "SS400",
+        "thk": 9,
+        "w": 2000,
+        "l": 3000,
+        "ea": 1,
+        "kind": "plate",
+        "kgEach": 423.9,
+        "sheets": 1,
+        "sheet": "1524×3048"
+      },
+      {
+        "name": "수평 보강거더",
+        "mat": "SS400",
+        "thk": 9,
+        "w": 250,
+        "l": 2000,
+        "ea": 5,
+        "kind": "plate",
+        "kgEach": 35.324999999999996,
+        "sheets": 1,
+        "sheet": "1524×3048"
+      }
+    ],
+    "sheets": 2,
+    "scrapRate": 0.0850676145796736,
+    "plateKg": 600.525,
+    "hasPlates": true,
+    "totalCost": 8089182.5,
+    "partKinds": 9,
+    "existH": 37.5,
+    "saveRate": 0.9992,
+    "Q": 1,
+    "B": 1
+  }
+}

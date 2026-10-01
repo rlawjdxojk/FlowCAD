@@ -1,0 +1,162 @@
+{
+  "id": "frp_rect_2000x2000",
+  "primary": false,
+  "description": "FRP 사각 2000×2000 (SKIN 보강 PL 시트 초과)",
+  "source": {
+    "file": "../flowcad-demo/src/FlowCADDemo.jsx",
+    "lines": "13-140",
+    "sha256": "19c4656e7ef7d2a564fd4bfb2b74a28678c454433a63280bbf771c52d46b98ed",
+    "generator": "scripts/gen-demo-fixtures.mjs"
+  },
+  "form": {
+    "type": "frp_rect",
+    "D": 700,
+    "W": 2000,
+    "H": 2000,
+    "drive": "manual",
+    "bays": 3,
+    "qty": 1
+  },
+  "demoOutput": {
+    "isCirc": false,
+    "isFrpRect": true,
+    "isInteg": false,
+    "isRoller": false,
+    "isLift": false,
+    "match": "맞춤 W×H 즉시 생성",
+    "lines": [
+      {
+        "name": "FRAME (문틀)",
+        "spec": "F.R.P + COATING",
+        "qty": 1,
+        "unit": "EA",
+        "price": 712800,
+        "sup": "FRP성형",
+        "mat": "FRP"
+      },
+      {
+        "name": "DOOR ASS'Y (문짝)",
+        "spec": "F.R.P / 2000×2000",
+        "qty": 1,
+        "unit": "EA",
+        "price": 583200,
+        "sup": "FRP성형",
+        "mat": "FRP"
+      },
+      {
+        "name": "FRAME / DOOR HINGE",
+        "spec": "STS304 / HINGE PIN Ø16~32",
+        "qty": 1,
+        "unit": "SET",
+        "price": 54720,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "SEAL PLATE",
+        "spec": "STS304 5T",
+        "qty": 1,
+        "unit": "EA",
+        "price": 0,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "SUPPORT BEAM",
+        "spec": "SS400 ㄷ-100×50×5/7.5T",
+        "qty": 3,
+        "unit": "본",
+        "price": 31200,
+        "sup": "형강",
+        "mat": "SS400"
+      },
+      {
+        "name": "LINK / CLAMP PLATE",
+        "spec": "STS304 5T·L-150",
+        "qty": 2,
+        "unit": "EA",
+        "price": 14000,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "SEAL RUBBER",
+        "spec": "EPDM 4T×40",
+        "qty": 8,
+        "unit": "m",
+        "price": 9000,
+        "sup": "고무자재",
+        "mat": "EPDM"
+      },
+      {
+        "name": "BOLT/NUT (앵커)",
+        "spec": "STS304 M10×45L",
+        "qty": 59,
+        "unit": "세트",
+        "price": 1100,
+        "sup": "체결구",
+        "mat": "STS304"
+      }
+    ],
+    "cuts": [
+      {
+        "name": "SEAL PLATE",
+        "mat": "STS304",
+        "thk": 5,
+        "w": 150,
+        "l": 220,
+        "ea": 1,
+        "kind": "plate",
+        "kgEach": 1.3084500000000001,
+        "sheets": 1,
+        "sheet": "1219×2438"
+      },
+      {
+        "name": "LINK PLATE",
+        "mat": "STS304",
+        "thk": 5,
+        "w": 290,
+        "l": 1800,
+        "ea": 2,
+        "kind": "plate",
+        "kgEach": 20.697300000000002,
+        "sheets": 1,
+        "sheet": "1219×2438"
+      },
+      {
+        "name": "CLAMP PLATE",
+        "mat": "STS304",
+        "thk": 5,
+        "w": 130,
+        "l": 1800,
+        "ea": 1,
+        "kind": "plate",
+        "kgEach": 9.2781,
+        "sheets": 1,
+        "sheet": "1219×2438"
+      },
+      {
+        "name": "SKIN 보강 PL",
+        "mat": "SS400",
+        "thk": 1.6,
+        "w": 2000,
+        "l": 2000,
+        "ea": 1,
+        "kind": "plate",
+        "kgEach": 50.239999999999995,
+        "sheets": 1,
+        "sheet": "1524×3048"
+      }
+    ],
+    "sheets": 4,
+    "scrapRate": 0.6083598470251055,
+    "plateKg": 102.22115,
+    "hasPlates": true,
+    "totalCost": 1913645.29,
+    "partKinds": 8,
+    "existH": 20,
+    "saveRate": 0.9985,
+    "Q": 1,
+    "B": 3
+  }
+}

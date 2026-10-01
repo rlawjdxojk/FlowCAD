@@ -1,0 +1,120 @@
+{
+  "id": "lift_1200x1500",
+  "primary": true,
+  "description": "인양식 1200×1500, 1 SET",
+  "source": {
+    "file": "../flowcad-demo/src/FlowCADDemo.jsx",
+    "lines": "13-140",
+    "sha256": "19c4656e7ef7d2a564fd4bfb2b74a28678c454433a63280bbf771c52d46b98ed",
+    "generator": "scripts/gen-demo-fixtures.mjs"
+  },
+  "form": {
+    "type": "lift",
+    "D": 700,
+    "W": 1200,
+    "H": 1500,
+    "drive": "manual",
+    "bays": 3,
+    "qty": 1
+  },
+  "demoOutput": {
+    "isCirc": false,
+    "isFrpRect": false,
+    "isInteg": false,
+    "isRoller": false,
+    "isLift": true,
+    "match": "맞춤 W×H 즉시 생성",
+    "lines": [
+      {
+        "name": "GATE LEAF (문짝)",
+        "spec": "STS304 5T / 1200×1500",
+        "qty": 1,
+        "unit": "EA",
+        "price": 0,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "GUIDE FRAME (문틀)",
+        "spec": "STS304 채널 / 표준 프레임고",
+        "qty": 1,
+        "unit": "SET",
+        "price": 0,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "인양 ROD / 인양고리",
+        "spec": "STS304 Ø41 인양봉",
+        "qty": 1,
+        "unit": "SET",
+        "price": 65000,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "SEAL RUBBER",
+        "spec": "EPDM 4T×40",
+        "qty": 6,
+        "unit": "m",
+        "price": 9000,
+        "sup": "고무자재",
+        "mat": "EPDM"
+      },
+      {
+        "name": "CLAMP PLATE",
+        "spec": "STS304 4T×50",
+        "qty": 4,
+        "unit": "EA",
+        "price": 9000,
+        "sup": "STS가공",
+        "mat": "STS304"
+      },
+      {
+        "name": "BOLT/NUT (앵커)",
+        "spec": "STS304 M12×50L",
+        "qty": 41,
+        "unit": "세트",
+        "price": 1300,
+        "sup": "체결구",
+        "mat": "STS304"
+      }
+    ],
+    "cuts": [
+      {
+        "name": "GATE LEAF SKIN",
+        "mat": "STS304",
+        "thk": 5,
+        "w": 1200,
+        "l": 1500,
+        "ea": 1,
+        "kind": "plate",
+        "kgEach": 71.37,
+        "sheets": 1,
+        "sheet": "1219×2438"
+      },
+      {
+        "name": "보강 RIB",
+        "mat": "STS304",
+        "thk": 5,
+        "w": 40,
+        "l": 1200,
+        "ea": 6,
+        "kind": "plate",
+        "kgEach": 1.9032,
+        "sheets": 1,
+        "sheet": "1219×2438"
+      }
+    ],
+    "sheets": 2,
+    "scrapRate": 0.6487121801985382,
+    "plateKg": 82.78920000000001,
+    "hasPlates": true,
+    "totalCost": 589130.3200000001,
+    "partKinds": 6,
+    "existH": 13.5,
+    "saveRate": 0.9977777777777778,
+    "Q": 1,
+    "B": 3
+  }
+}
