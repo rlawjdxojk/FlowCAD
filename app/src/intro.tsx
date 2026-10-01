@@ -39,7 +39,7 @@ function Hero() {
   return (
     <section className="hero">
       <div className="hero-copy">
-        <h1>규격을 넣으면<br />수문이 선다</h1>
+        <h1>규격을 넣으면<br />수문이 그려진다</h1>
         <p className="lead">
           폭·높이·련 수를 입력하면 협업 제조사의 설계 규칙으로 3D 형상, 부품표, 절단 목록, 발주서를 한 번에 계산합니다.
         </p>
