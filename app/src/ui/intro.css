@@ -1,0 +1,80 @@
+/* 소개 페이지 — 앱과 같은 토큰(styles.css :root)을 쓴다. 대표 요소는 첫 화면의 끌 수 있는 수위표 하나. */
+
+.intro { max-width: 1240px; margin: 0 auto; padding: 0 28px 48px; }
+
+.intro-top { display: flex; align-items: baseline; gap: 10px; padding: 22px 0 6px; }
+.intro-open {
+  margin-left: auto; font-size: 13px; font-weight: 700; color: var(--ink); text-decoration: none;
+  border-bottom: 2px solid var(--ink); padding-bottom: 1px;
+}
+.intro-open:hover { color: var(--gauge); border-color: var(--gauge); }
+
+/* 첫 화면 */
+.hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 40px; align-items: center; padding: 40px 0 64px; }
+.hero h1 {
+  font-family: var(--display); font-weight: 400; font-size: clamp(44px, 6.4vw, 84px);
+  line-height: 1.02; letter-spacing: -.5px; margin: 0;
+}
+.hero .lead { font-size: 17px; line-height: 1.7; color: #3c474d; margin: 22px 0 0; max-width: 30em; }
+.cta { display: flex; gap: 18px; align-items: center; margin-top: 30px; flex-wrap: wrap; }
+.btn {
+  display: inline-block; background: var(--ink); color: #fff; text-decoration: none; font-weight: 700; font-size: 15px;
+  padding: 13px 22px; border-radius: 8px;
+}
+.btn:hover { background: var(--gauge); }
+.btn-ghost { color: var(--ink); font-weight: 700; font-size: 14px; text-decoration: none; border-bottom: 1px solid var(--ink); }
+
+.hero-stage { margin: 0; }
+.hero-stage .view { border-radius: 12px; }
+.v3d-compact .v3d-canvas { height: 520px; }
+.hero-stage figcaption { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
+.hint { font-size: 13px; font-weight: 700; }
+.hint::before { content: "↕ "; color: var(--gauge); }
+.live { font-family: var(--mono); font-size: 12px; color: var(--steel); }
+
+/* 끌 수 있는 수위표 */
+.sg-drag { cursor: ns-resize; touch-action: none; }
+.sg-drag:hover .sg-board { fill: #fff; }
+.sg-drag .sg-mark { transition-duration: .12s; }
+.sg-drag .sg-read { transition-duration: .12s; }
+
+/* 섹션 공통 */
+.intro h2 { font-family: var(--display); font-weight: 400; font-size: 32px; margin: 0 0 22px; }
+.how, .kinds, .status { padding: 44px 0; border-top: 1px solid var(--line); }
+
+/* 작동 방식 — 실제 순서가 있는 과정이라 번호를 붙임 */
+.how ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.how li { position: relative; padding-top: 16px; border-top: 3px solid var(--ink); }
+.how-n { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--gauge); }
+.how h3 { font-size: 18px; margin: 6px 0 8px; }
+.how p { margin: 0; color: #3c474d; line-height: 1.7; }
+
+/* 지원 형식 */
+.kinds-note { margin: -12px 0 16px; font-size: 12.5px; color: var(--steel); }
+.kinds table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.kinds th { text-align: left; font-size: 11.5px; color: var(--steel); font-weight: 700; padding: 0 12px 10px 0; border-bottom: 2px solid var(--ink); }
+.kinds td { padding: 14px 12px 14px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.kinds .num { text-align: right; font-family: var(--mono); white-space: nowrap; }
+.kinds-name { font-weight: 800; white-space: nowrap; }
+.kinds-parts { color: #3c474d; }
+.kinds a { font-weight: 700; color: var(--ink); white-space: nowrap; }
+.kinds a:hover { color: var(--gauge); }
+
+/* 지금 상태 */
+.status ul { margin: 0; padding-left: 20px; line-height: 1.9; color: #3c474d; max-width: 46em; }
+
+.intro-foot { padding-top: 28px; border-top: 1px solid var(--line); font-size: 12px; color: var(--steel); }
+
+@media (max-width: 960px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-top: 24px; }
+  .how ol { grid-template-columns: 1fr; }
+  .kinds-parts { display: none; }
+}
+@media (max-width: 640px) {
+  .intro { padding: 0 16px 40px; }
+  .v3d-compact .v3d-canvas { height: 400px; }
+  .kinds th:nth-child(2), .kinds td:nth-child(2) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sg-drag .sg-mark, .sg-drag .sg-read { transition: none; }
+}

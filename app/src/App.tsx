@@ -35,7 +35,11 @@ const TYPE_DEFAULTS: Record<string, Partial<RawDesignForm>> = {
 };
 
 export default function App() {
-  const [form, setForm] = useState<RawDesignForm>(INITIAL_FORM);
+  // 소개 페이지에서 ?type=frp_rect 처럼 형식을 골라 들어오면 그 형식의 기본 규격으로 시작
+  const [form, setForm] = useState<RawDesignForm>(() => {
+    const t = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("type");
+    return t && TYPE_DEFAULTS[t] ? { ...INITIAL_FORM, type: t, ...TYPE_DEFAULTS[t] } : INITIAL_FORM;
+  });
   const [tab, setTab] = useState<Tab>("bom");
   const [viewTab, setViewTab] = useState<ViewTab>("3d");
   // 데모와 같은 변환: 빈칸은 "" 로 두고(검증에서 오류 처리), 숫자로 읽히면 숫자로 저장

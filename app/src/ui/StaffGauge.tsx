@@ -1,7 +1,7 @@
 /* 수위표(staff gauge) — 3D 뷰 옆에 세우는 높이 눈금.
    수문 현장의 빨강 E자 눈금판 모양으로, 현재 문비 높이 H(원형은 지름 D)를 눈금 위에 표시한다.
    장식이 아니라 입력 치수를 그대로 보여 주는 장치라서, 값이 바뀌면 표시선이 눈금을 따라 움직인다. */
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 
 const BAND = 0.1; // E자 하나 = 0.1 m
 
@@ -10,7 +10,17 @@ function scaleTop(hM: number): number {
   return Math.max(1, Math.ceil((hM * 1.25) / 0.5) * 0.5);
 }
 
-export function StaffGauge({ heightMm, label }: { heightMm: number; label: string }) {
+interface Drag {
+  /** 눈금 상한(m) 고정 — 끄는 동안 눈금이 흔들리지 않게 */
+  scaleMaxM: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (mm: number) => void;
+}
+
+/** drag 를 주면 수위표를 끌거나 화살표 키로 높이를 바꿀 수 있다(소개 페이지). */
+export function StaffGauge({ heightMm, label, drag }: { heightMm: number; label: string; drag?: Drag }) {
   const box = useRef<HTMLDivElement>(null);
   const [px, setPx] = useState(480);
 
@@ -23,7 +33,7 @@ export function StaffGauge({ heightMm, label }: { heightMm: number; label: strin
   }, []);
 
   const hM = heightMm / 1000;
-  const top = scaleTop(hM);
+  const top = drag ? drag.scaleMaxM : scaleTop(hM);
   const pad = 14;
   const usable = px - pad * 2;
   const yOf = (m: number) => pad + usable * (1 - m / top);
@@ -58,8 +68,29 @@ export function StaffGauge({ heightMm, label }: { heightMm: number; label: strin
     meters.push(<text key={m} x={36} y={yOf(m) + 4} className="sg-num">{m}</text>);
   }
 
+  const clamp = (mm: number) => drag ? Math.min(drag.max, Math.max(drag.min, Math.round(mm / drag.step) * drag.step)) : mm;
+  const fromPointer = (e: PointerEvent<HTMLDivElement>) => {
+    if (!drag || !box.current) return;
+    const y = e.clientY - box.current.getBoundingClientRect().top;
+    drag.onChange(clamp(((1 - (y - pad) / usable) * top) * 1000));
+  };
+  const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (!drag) return;
+    const d = e.key === "ArrowUp" || e.key === "ArrowRight" ? 1 : e.key === "ArrowDown" || e.key === "ArrowLeft" ? -1 : 0;
+    if (d) { e.preventDefault(); drag.onChange(clamp(heightMm + d * drag.step)); }
+  };
+  const a11y = drag
+    ? {
+        role: "slider", tabIndex: 0, "aria-label": label, "aria-valuemin": drag.min, "aria-valuemax": drag.max,
+        "aria-valuenow": heightMm, "aria-valuetext": `${hM.toFixed(2)} m`,
+        onPointerDown: (e: PointerEvent<HTMLDivElement>) => { e.currentTarget.setPointerCapture(e.pointerId); fromPointer(e); },
+        onPointerMove: (e: PointerEvent<HTMLDivElement>) => { if (e.currentTarget.hasPointerCapture(e.pointerId)) fromPointer(e); },
+        onKeyDown: onKey,
+      }
+    : { role: "img", "aria-label": `${label} ${hM.toFixed(2)} m` };
+
   return (
-    <div className="sg" ref={box} aria-label={`${label} ${hM.toFixed(2)} m`} role="img">
+    <div className={"sg" + (drag ? " sg-drag" : "")} ref={box} {...a11y}>
       <svg width={W} height={px} viewBox={`0 0 ${W} ${px}`}>
         <rect x={4} y={pad} width={W - 8} height={usable} rx={2} className="sg-board" />
         {marks}

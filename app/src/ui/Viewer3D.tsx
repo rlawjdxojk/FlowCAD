@@ -26,7 +26,11 @@ const VIEW_DIR: Record<View, Vec3> = {
   top: [0, 1, 0.001],
 };
 
-export function Viewer3D({ model, lines, side }: { model: Model3D; lines: BomLine[]; side?: ReactNode }) {
+/** compact: 시점 버튼·안내·주석을 숨긴 소개 페이지용 */
+/** fitBounds: 카메라를 맞출 범위를 고정(값을 끄는 동안 카메라가 튀지 않게) */
+export function Viewer3D({ model, lines, side, compact, fitBounds }: {
+  model: Model3D; lines: BomLine[]; side?: ReactNode; compact?: boolean; fitBounds?: { min: Vec3; max: Vec3 };
+}) {
   const [view, setView] = useState<View>("iso");
   const [viewNonce, setViewNonce] = useState(0);
   const [showContext, setShowContext] = useState(true);
@@ -43,8 +47,8 @@ export function Viewer3D({ model, lines, side }: { model: Model3D; lines: BomLin
   const pick = (v: View) => { setView(v); setViewNonce((n) => n + 1); };
 
   return (
-    <div className="v3d">
-      <div className="v3d-bar">
+    <div className={"v3d" + (compact ? " v3d-compact" : "")}>
+      {!compact && <div className="v3d-bar">
         {(["iso", "front", "side", "top"] as View[]).map((v) => (
           <button key={v} type="button" className={view === v ? "on" : ""} onClick={() => pick(v)}>
             {{ iso: "아이소", front: "정면(상류)", side: "측면", top: "평면" }[v]}
@@ -52,7 +56,7 @@ export function Viewer3D({ model, lines, side }: { model: Model3D; lines: BomLin
         ))}
         <label className="v3d-chk"><input type="checkbox" checked={showContext} onChange={(e) => setShowContext(e.target.checked)} />콘크리트 표시</label>
         <span className="v3d-count">부재 {nBom}개 · 1 SET</span>
-      </div>
+      </div>}
 
       <div className="v3d-row">
       <div className="v3d-canvas">
@@ -74,13 +78,13 @@ export function Viewer3D({ model, lines, side }: { model: Model3D; lines: BomLin
             args={[60, 60]} cellSize={0.5} sectionSize={2.5}
             cellColor="#1a5560" sectionColor="#2b7a82" fadeDistance={45} infiniteGrid
           />
-          <CameraRig bounds={model.bounds} view={view} nonce={viewNonce} />
+          <CameraRig bounds={fitBounds ?? model.bounds} view={view} nonce={viewNonce} zoom={!compact} />
           <GizmoHelper alignment="bottom-right" margin={[64, 64]}>
             <GizmoViewport axisColors={["#e05a4f", "#5fbf6a", "#4f8fe0"]} labelColor={WATER} />
           </GizmoHelper>
         </Canvas>
 
-        <div className="v3d-info">
+        {(sel || !compact) && <div className="v3d-info">
           {sel ? (
             <>
               <div className="v3d-info-h">{sel.label}</div>
@@ -94,11 +98,11 @@ export function Viewer3D({ model, lines, side }: { model: Model3D; lines: BomLin
           ) : (
             <div className="v3d-info-hint">부재를 클릭하면 품명·규격이 표시됩니다 · 드래그 회전 · 우클릭 드래그 이동 · 휠 확대</div>
           )}
-        </div>
+        </div>}
       </div>
       {side}
       </div>
-      <p className="v3d-note">{model.notes.join(" · ")}</p>
+      {!compact && <p className="v3d-note">{model.notes.join(" · ")}</p>}
     </div>
   );
 }
@@ -157,7 +161,8 @@ function PartMesh({ part, selected, hovered, onSelect, onHover }: {
 }
 
 /** 모델 크기에 맞춰 카메라 위치·대상을 잡는다. 시점 버튼을 누르거나 모델 크기가 바뀌면 다시 맞춘다. */
-function CameraRig({ bounds, view, nonce }: { bounds: { min: Vec3; max: Vec3 }; view: View; nonce: number }) {
+/** zoom=false: 휠을 페이지 스크롤에 양보(소개 페이지) */
+function CameraRig({ bounds, view, nonce, zoom = true }: { bounds: { min: Vec3; max: Vec3 }; view: View; nonce: number; zoom?: boolean }) {
   const { camera, size: viewport } = useThree();
   const controls = useRef<OrbitControlsImpl>(null);
   const key = `${bounds.min.join()}|${bounds.max.join()}`;
@@ -181,7 +186,7 @@ function CameraRig({ bounds, view, nonce }: { bounds: { min: Vec3; max: Vec3 }; 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, view, nonce, viewport.width, viewport.height]);
 
-  return <OrbitControls ref={controls} makeDefault enableDamping dampingFactor={0.12} />;
+  return <OrbitControls ref={controls} makeDefault enableDamping dampingFactor={0.12} enableZoom={zoom} enablePan={zoom} />;
 }
 
 
