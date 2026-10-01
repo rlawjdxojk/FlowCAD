@@ -66,7 +66,7 @@ export function Blueprint({ input }: { input: DesignInput }) {
     <TitleBlock label={`${roller ? "롤러게이트" : integ ? "일체식 수문" : lift ? "인양식 수문" : "FRP 자동수문"} · ${W}×${H}`} /></svg>);
 }
 
-function BG() { return <rect width="880" height="540" fill="#0C2233" />; }
+function BG() { return <rect width="880" height="540" fill="#0E3B43" />; }
 function Grid() { return <rect width="880" height="540" fill="url(#g)" />; }
-function Defs() { return <defs><pattern id="g" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M22 0H0V22" fill="none" stroke="#13344a" strokeWidth="1" /></pattern><marker id="ar" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M1 1L8 4.5L1 8" fill="none" stroke="#7FA6BE" strokeWidth="1.2" /></marker></defs>; }
+function Defs() { return <defs><pattern id="g" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M22 0H0V22" fill="none" stroke="#17505a" strokeWidth="1" /></pattern><marker id="ar" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M1 1L8 4.5L1 8" fill="none" stroke="#7FA6BE" strokeWidth="1.2" /></marker></defs>; }
 function TitleBlock({ label }: { label: string }) { return <g><rect x={VW - 214} y={VH - 50} width="198" height="36" fill="none" stroke="#7FA6BE" strokeWidth="1" /><line x1={VW - 214} y1={VH - 36} x2={VW - 16} y2={VH - 36} stroke="#7FA6BE" strokeWidth=".6" /><text x={VW - 206} y={VH - 39} className="bp-tb">{label}</text><text x={VW - 206} y={VH - 23} className="bp-tb dim">FlowCAD AUTO-GEN · DWG/DXF</text></g>; }

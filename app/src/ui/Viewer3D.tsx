@@ -1,6 +1,6 @@
 /* 3D 뷰어 (PRD v2.2 4장 "3D 뷰어" P0).
    규칙 엔진의 3D 형상 모델(buildModel3D)을 Three.js 로 그린다. 형상 계산은 엔진에만 있고, 여기서는 표시·조작만 한다. */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Canvas, useThree, type ThreeEvent } from "@react-three/fiber";
 import { Edges, GizmoHelper, GizmoViewport, Grid, OrbitControls } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
@@ -8,6 +8,7 @@ import { ExtrudeGeometry, Path, Shape, type PerspectiveCamera } from "three";
 import type { BomLine, Model3D, Part3D, Vec3 } from "../engine";
 
 const MM = 0.001; // 화면 단위 m
+const WATER = "#0e3b43"; // 뷰 배경 — styles.css --water 와 같은 값
 
 const MAT_COLOR: Record<string, string> = {
   SS400: "#7d93a3",
@@ -25,7 +26,7 @@ const VIEW_DIR: Record<View, Vec3> = {
   top: [0, 1, 0.001],
 };
 
-export function Viewer3D({ model, lines }: { model: Model3D; lines: BomLine[] }) {
+export function Viewer3D({ model, lines, side }: { model: Model3D; lines: BomLine[]; side?: ReactNode }) {
   const [view, setView] = useState<View>("iso");
   const [viewNonce, setViewNonce] = useState(0);
   const [showContext, setShowContext] = useState(true);
@@ -53,9 +54,10 @@ export function Viewer3D({ model, lines }: { model: Model3D; lines: BomLine[] })
         <span className="v3d-count">부재 {nBom}개 · 1 SET</span>
       </div>
 
+      <div className="v3d-row">
       <div className="v3d-canvas">
         <Canvas camera={{ fov: 35, near: 0.05, far: 500 }} shadows dpr={[1, 2]} onPointerMissed={() => setSelected(null)}>
-          <color attach="background" args={["#0c2233"]} />
+          <color attach="background" args={[WATER]} />
           <hemisphereLight args={["#dfefff", "#22313c", 0.9]} />
           <directionalLight position={[8, 14, 10]} intensity={1.6} castShadow shadow-mapSize={[2048, 2048]} />
           <directionalLight position={[-10, 6, -8]} intensity={0.5} />
@@ -70,11 +72,11 @@ export function Viewer3D({ model, lines }: { model: Model3D; lines: BomLine[] })
           <Grid
             position={[0, (model.bounds.min[1] * MM) - 0.001, 0]}
             args={[60, 60]} cellSize={0.5} sectionSize={2.5}
-            cellColor="#1d4560" sectionColor="#2f6a8c" fadeDistance={45} infiniteGrid
+            cellColor="#1a5560" sectionColor="#2b7a82" fadeDistance={45} infiniteGrid
           />
           <CameraRig bounds={model.bounds} view={view} nonce={viewNonce} />
           <GizmoHelper alignment="bottom-right" margin={[64, 64]}>
-            <GizmoViewport axisColors={["#e05a4f", "#5fbf6a", "#4f8fe0"]} labelColor="#0c2233" />
+            <GizmoViewport axisColors={["#e05a4f", "#5fbf6a", "#4f8fe0"]} labelColor={WATER} />
           </GizmoHelper>
         </Canvas>
 
@@ -93,6 +95,8 @@ export function Viewer3D({ model, lines }: { model: Model3D; lines: BomLine[] })
             <div className="v3d-info-hint">부재를 클릭하면 품명·규격이 표시됩니다 · 드래그 회전 · 우클릭 드래그 이동 · 휠 확대</div>
           )}
         </div>
+      </div>
+      {side}
       </div>
       <p className="v3d-note">{model.notes.join(" · ")}</p>
     </div>

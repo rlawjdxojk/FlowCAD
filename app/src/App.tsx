@@ -5,7 +5,10 @@
    - 입력 오류(빈 값·범위 밖)는 칸 아래와 입력 패널에 표시하고, 결과는 "마지막으로 유효했던 입력" 기준으로 유지한다
      (입력 도중 잠깐 범위를 벗어날 때마다 결과가 사라지지 않게 하기 위함). 이때 결과 위에 안내를 띄운다.
    - 시트 초과 판재 경고를 결과 상단과 Cut list 에 표시한다.
-   - 시간 절감 지표·자재비에 "추정" 라벨을 붙인다(PRD 5장, 7장 4). */
+   - 시간 절감 지표·자재비에 "추정" 라벨을 붙인다(PRD 5장, 7장 4).
+
+   화면 구성(2026-10 리디자인): 형식은 상단 탭, 왼쪽은 규격 입력 + 명판(요약 수치), 가운데는 3D 뷰 + 수위표,
+   아래는 BOM·Cut List·발주서. 수위표는 문비 높이 H(원형은 D)를 눈금으로 보여 준다. */
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { buildModel3D, runDesign, kg, won, type DesignResult, type RawDesignForm, type ValidationError } from "./engine";
 import { CIRC_SIZES, INPUT_RANGES, RULE_CLEARANCE } from "./engine/rules";
@@ -13,6 +16,7 @@ import { Blueprint } from "./ui/Blueprint";
 import { Viewer3D } from "./ui/Viewer3D";
 import { BomTable, CutList, Field, Metric, PurchaseOrder } from "./ui/Tables";
 import { useCountUp } from "./ui/useCountUp";
+import { StaffGauge } from "./ui/StaffGauge";
 
 type Tab = "bom" | "cut" | "po";
 type ViewTab = "3d" | "2d";
@@ -61,43 +65,49 @@ export default function App() {
 
   const dRange = INPUT_RANGES.frp_circle.D!;
   const bRange = INPUT_RANGES.roller.bays!;
+  const gaugeMm = r ? (r.input.type === "frp_circle" ? r.input.D : r.input.H) : 0;
+  const gaugeLabel = r?.input.type === "frp_circle" ? "개구 지름 D" : "문비 높이 H";
+  const gauge = r ? <StaffGauge heightMm={gaugeMm} label={gaugeLabel} /> : null;
+  const pickType = (t: string) => setForm((f) => ({ ...f, type: t, ...TYPE_DEFAULTS[t] }));
 
   return (
     <div className="fc">
-      <header className="hd">
-        <div className="hd-brand"><span className="logo">Flow<b>CAD</b></span><span className="tag">수문 제조 설계 자동화 플랫폼</span></div>
-        <div className="hd-right"><span className="pill">LIVE DEMO</span><span className="date">실제 제작도면 34장 기준</span></div>
+      <header className="top">
+        <div className="brand">
+          <span className="logo">FlowCAD</span>
+          <span className="brand-sub">수문 제조 설계</span>
+        </div>
+        <nav className="types" aria-label="수문 형식">
+          {TYPES.map(([v, name]) => (
+            <button key={v} type="button" className={form.type === v ? "on" : ""} aria-pressed={form.type === v} onClick={() => pickType(v)}>
+              {name}
+            </button>
+          ))}
+        </nav>
+        <span className="top-note">협업 업체 제작도 기반 규칙 · 단가는 추정</span>
       </header>
 
-      <div className="grid">
-        <aside className="panel inputs">
-          <div className="panel-h"><span className="step">01</span>수문 규격 입력</div>
-          <Field label="제품 형식" error={errOf("type")}>
-            <select value={form.type} onChange={(e) => { const t = e.target.value; setForm((f) => ({ ...f, type: t, ...TYPE_DEFAULTS[t] })); }}>
-              <option value="frp_circle">FRP 자동수문 (원형)</option>
-              <option value="frp_rect">FRP 자동수문 (사각)</option>
-              <option value="integ">일체식 수문</option>
-              <option value="roller">롤러게이트 (대형)</option>
-              <option value="lift">인양식 수문</option>
-            </select>
-          </Field>
+      <div className="layout">
+        <aside className="spec">
+          <h1 className="spec-h">{TYPE_TITLE[form.type] ?? "수문"}</h1>
+          <p className="spec-lead">규격을 바꾸면 3D 형상·부품표·절단 목록이 바로 다시 계산됩니다.</p>
 
           {isCirc ? (
-            <Field label={`개구 직경 ØD — ${form.D}mm`} error={errOf("D")}>
+            <Field label={`개구 지름 ØD — ${form.D}mm`} error={errOf("D")}>
               <input type="range" min={dRange.min} max={dRange.max} step="10" value={form.D ?? ""} onChange={set("D")} />
               <div className="catalog">{CIRC_SIZES.map((s) => <button key={s} type="button" className={+(form.D ?? 0) === s ? "on" : ""} onClick={() => setForm((f) => ({ ...f, D: s }))}>Ø{s}</button>)}</div>
             </Field>
           ) : (
             <div className="row2">
-              <Field label="폭 W (mm)" error={errOf("W")}><input type="number" className={errOf("W") ? "invalid" : undefined} value={form.W ?? ""} onChange={set("W")} /></Field>
-              <Field label="높이 H (mm)" error={errOf("H")}><input type="number" className={errOf("H") ? "invalid" : undefined} value={form.H ?? ""} onChange={set("H")} /></Field>
+              <Field label="폭 W (mm)" error={errOf("W")}><input type="number" inputMode="numeric" className={errOf("W") ? "invalid" : undefined} value={form.W ?? ""} onChange={set("W")} /></Field>
+              <Field label="높이 H (mm)" error={errOf("H")}><input type="number" inputMode="numeric" className={errOf("H") ? "invalid" : undefined} value={form.H ?? ""} onChange={set("H")} /></Field>
             </div>
           )}
 
           {isInteg && <Field label="구동 방식" error={errOf("drive")}><select value={form.drive} onChange={set("drive")}><option value="manual">수동 (스핀들+기어박스)</option><option value="motor">전동 (액추에이터)</option></select></Field>}
-          {isRoller && <Field label={`연동 수 (련) — ${form.bays}련`} error={errOf("bays")}><input type="range" min={bRange.min} max={bRange.max} step="1" value={form.bays ?? ""} onChange={set("bays")} /></Field>}
+          {isRoller && <Field label={`연동 수 — ${form.bays}련`} error={errOf("bays")}><input type="range" min={bRange.min} max={bRange.max} step="1" value={form.bays ?? ""} onChange={set("bays")} /></Field>}
 
-          <Field label="수량 (SET)" error={errOf("qty")}><input type="number" min="1" className={errOf("qty") ? "invalid" : undefined} value={form.qty ?? ""} onChange={set("qty")} /></Field>
+          <Field label="수량 (SET)" error={errOf("qty")}><input type="number" inputMode="numeric" min="1" className={errOf("qty") ? "invalid" : undefined} value={form.qty ?? ""} onChange={set("qty")} /></Field>
 
           {errors.length > 0 && (
             <div className="errbox" role="alert">
@@ -106,28 +116,14 @@ export default function App() {
             </div>
           )}
 
-          <div className="rule"><b>설계 규칙 자동 적용</b>설치 여유 ≥ {RULE_CLEARANCE}mm{isCirc && " · SEAL PLATE Ø(D−10)"}{hasPlates && " · 표준시트 네스팅"}</div>
-          <p className="note">입력 즉시 도면·제작 cut list·발주서가 재산출됩니다. 허용 범위 밖 값은 오류로 표시합니다.</p>
-        </aside>
-
-        {r && (
-          <main className="output">
-            {!run.ok && <div className="stale">입력 오류가 있어 아래 결과는 마지막으로 유효했던 입력 기준입니다.</div>}
-
-            <section className="panel canvas-wrap">
-              <div className="panel-h light">
-                <span className="step">02</span>설계 형상 자동 생성
-                <span className="vtabs">
-                  <button type="button" className={viewTab === "3d" ? "on" : ""} onClick={() => setViewTab("3d")}>3D 뷰</button>
-                  <button type="button" className={viewTab === "2d" ? "on" : ""} onClick={() => setViewTab("2d")}>2D 도면</button>
-                </span>
-                <span className="auto">{r.match}</span>
+          {r && (
+            <section className="plate" aria-label="설계 요약">
+              <div className="plate-h">
+                <span>설계 요약</span>
+                <span className="plate-id">{r.Q} SET{r.input.type === "roller" ? ` · ${r.B}련` : ""}</span>
               </div>
-              {viewTab === "3d" && model3d ? <Viewer3D model={model3d} lines={r.lines} /> : <Blueprint input={r.input} />}
-            </section>
-
-            <section className="metrics">
-              <Metric k={<>예상 자재비<span className="est">추정</span></>} v={`₩ ${won(aCost)}`} sub={`${r.Q} SET${r.input.type === "roller" ? ` · ${r.B}련` : ""} · 데모 표준단가 · 가공 별도`} />
+              <Metric k={<>예상 자재비<span className="est">추정</span></>} v={`₩ ${won(aCost)}`} sub="데모 표준단가 · 가공비 별도" />
+              <Metric k="강판 중량" v={`${kg(r.plateKg)} kg`} sub={r.hasPlates ? "절단 부품 합계" : "—"} />
               {r.hasPlates
                 ? <Metric k="강판 로스율"
                     v={r.scrapRate === null ? "—" : `${aScrap.toFixed(1)}%`}
@@ -135,8 +131,28 @@ export default function App() {
                       ? `전 판재 시트 초과 · 최소 ${r.oversizeSheetsMin}매`
                       : `표준시트 ${r.sheets}매 네스팅${r.oversizeSheetsMin > 0 ? ` + 초과 부품 최소 ${r.oversizeSheetsMin}매` : ""}`} />
                 : <Metric k="부품 종수" v={`${Math.round(aPart)} 종`} sub="STS304 + FRP + EPDM" />}
-              <Metric k={<>설계+산출 시간 절감<span className="est">추정</span></>} v={`${aSave.toFixed(1)}%`} sub={`기존 약 ${r.estimate.existH.toFixed(0)}시간(추정식, 실측 전) → 수 초`} hot />
-              <Metric k="강판 중량" v={`${kg(r.plateKg)} kg`} sub={r.hasPlates ? "절단 부품 합계" : "—"} />
+              <Metric k={<>설계+산출 시간 절감<span className="est">추정</span></>} v={`${aSave.toFixed(1)}%`} sub={`기존 약 ${r.estimate.existH.toFixed(0)}시간(추정식, 실측 전)`} />
+            </section>
+          )}
+
+          <p className="rule">설치 여유 ≥ {RULE_CLEARANCE}mm{isCirc && " · SEAL PLATE Ø(D−10)"}{hasPlates && " · 표준시트 네스팅"} 규칙 적용</p>
+        </aside>
+
+        {r && (
+          <main className="stage">
+            {!run.ok && <div className="stale">입력 오류가 있어 아래 결과는 마지막으로 유효했던 입력 기준입니다.</div>}
+
+            <section className="view" aria-label="설계 형상">
+              <div className="view-bar">
+                <div className="seg" role="group" aria-label="보기 방식">
+                  <button type="button" className={viewTab === "3d" ? "on" : ""} aria-pressed={viewTab === "3d"} onClick={() => setViewTab("3d")}>3D</button>
+                  <button type="button" className={viewTab === "2d" ? "on" : ""} aria-pressed={viewTab === "2d"} onClick={() => setViewTab("2d")}>2D 도면</button>
+                </div>
+                <span className="match">{r.match}</span>
+              </div>
+              {viewTab === "3d" && model3d
+                ? <Viewer3D model={model3d} lines={r.lines} side={gauge} />
+                : <div className="bp-row"><div className="bp-wrap"><Blueprint input={r.input} /></div>{gauge}</div>}
             </section>
 
             {r.warnings.length > 0 && (
@@ -146,21 +162,37 @@ export default function App() {
               </div>
             )}
 
-            <section className="panel">
-              <div className="tabs">
-                <button className={tab === "bom" ? "on" : ""} onClick={() => setTab("bom")}><span className="step sm">03</span>부품 (BOM)</button>
-                {r.hasPlates && <button className={tab === "cut" ? "on" : ""} onClick={() => setTab("cut")}><span className="step sm">04</span>제작 Cut List</button>}
-                <button className={tab === "po" ? "on" : ""} onClick={() => setTab("po")}><span className="step sm">{r.hasPlates ? "05" : "04"}</span>발주서</button>
+            <section className="sheet">
+              <div className="tabs" role="tablist">
+                <button role="tab" aria-selected={tab === "bom"} className={tab === "bom" ? "on" : ""} onClick={() => setTab("bom")}>부품표 (BOM)</button>
+                {r.hasPlates && <button role="tab" aria-selected={tab === "cut"} className={tab === "cut" ? "on" : ""} onClick={() => setTab("cut")}>절단 목록</button>}
+                <button role="tab" aria-selected={tab === "po"} className={tab === "po" ? "on" : ""} onClick={() => setTab("po")}>발주서</button>
               </div>
               {tab === "bom" && <BomTable r={r} />}
               {tab === "cut" && <CutList r={r} />}
               {tab === "po" && <PurchaseOrder r={r} />}
             </section>
 
-            <p className="disclaimer">※ 부품·재질(STS304·SS400·F.R.P)·절단 규격은 협업 업체 <b>실제 제작 도면</b>에서 추출했습니다. 단가는 데모 표준값(추정)으로, 업체 단가 DB 연동 시 실매입가로 보정됩니다. 구조 검토는 별도입니다.</p>
+            <p className="disclaimer">부품·재질(STS304·SS400·F.R.P)·절단 규격은 협업 업체 제작 도면에서 가져온 규칙입니다. 단가는 데모 표준값(추정)이며, 구조 검토는 별도입니다.</p>
           </main>
         )}
       </div>
     </div>
   );
 }
+
+const TYPES: Array<[string, string]> = [
+  ["frp_circle", "FRP 원형"],
+  ["frp_rect", "FRP 사각"],
+  ["integ", "일체식"],
+  ["lift", "인양식"],
+  ["roller", "롤러게이트"],
+];
+
+const TYPE_TITLE: Record<string, string> = {
+  frp_circle: "FRP 자동수문 · 원형",
+  frp_rect: "FRP 자동수문 · 사각",
+  integ: "일체식 수문",
+  lift: "인양식 수문",
+  roller: "롤러게이트",
+};
