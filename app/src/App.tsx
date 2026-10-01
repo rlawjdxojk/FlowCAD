@@ -20,6 +20,16 @@ type ViewTab = "3d" | "2d";
 // 초기 입력: 데모 FlowCADDemo.jsx:142 와 같음 (PRD 대표 시나리오)
 const INITIAL_FORM: RawDesignForm = { type: "roller", D: 700, W: 3500, H: 4000, drive: "manual", bays: 3, qty: 1 };
 
+// 형식을 바꿀 때 넣어 줄 형식별 기본 규격(화면용). 데모는 모든 형식이 롤러용 3500×4000 을 같이 써서
+// 형식을 바꾸면 허용 범위를 벗어났다(ANY 스펙 N12). 값은 기준 테스트 입력과 업체 공개 호칭 범위에서 골랐다.
+const TYPE_DEFAULTS: Record<string, Partial<RawDesignForm>> = {
+  frp_circle: { D: 700 },
+  frp_rect: { W: 1500, H: 1500 },
+  integ: { W: 800, H: 1000 },
+  lift: { W: 1200, H: 1500 },
+  roller: { W: 3500, H: 4000, bays: 3 },
+};
+
 export default function App() {
   const [form, setForm] = useState<RawDesignForm>(INITIAL_FORM);
   const [tab, setTab] = useState<Tab>("bom");
@@ -63,7 +73,7 @@ export default function App() {
         <aside className="panel inputs">
           <div className="panel-h"><span className="step">01</span>수문 규격 입력</div>
           <Field label="제품 형식" error={errOf("type")}>
-            <select value={form.type} onChange={set("type")}>
+            <select value={form.type} onChange={(e) => { const t = e.target.value; setForm((f) => ({ ...f, type: t, ...TYPE_DEFAULTS[t] })); }}>
               <option value="frp_circle">FRP 자동수문 (원형)</option>
               <option value="frp_rect">FRP 자동수문 (사각)</option>
               <option value="integ">일체식 수문</option>

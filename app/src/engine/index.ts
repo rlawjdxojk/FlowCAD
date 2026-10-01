@@ -17,3 +17,4 @@ export function runDesign(raw: RawDesignForm): RunResult {
 }
 export { buildModel3D } from "./model3d";
 export type { Model3D, Part3D, Vec3, Axis } from "./model3d";
+export { boundsOf, extentOf } from "./model3d";

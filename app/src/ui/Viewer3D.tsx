@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useThree, type ThreeEvent } from "@react-three/fiber";
 import { Edges, GizmoHelper, GizmoViewport, Grid, OrbitControls } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
-import type { PerspectiveCamera } from "three";
+import { ExtrudeGeometry, Path, Shape, type PerspectiveCamera } from "three";
 import type { BomLine, Model3D, Part3D, Vec3 } from "../engine";
 
 const MM = 0.001; // 화면 단위 m
@@ -87,7 +87,7 @@ export function Viewer3D({ model, lines }: { model: Model3D; lines: BomLine[] })
               <div className="v3d-info-r"><span>형상</span>{sel.kind === "cyl" ? `Ø${sel.size[0]} × ${sel.size[1]}` : sel.size.join(" × ")} mm</div>
               {selLine
                 ? <div className="v3d-info-r"><span>BOM</span>{selLine.name} · {selLine.qty} {selLine.unit}</div>
-                : <div className="v3d-info-r dim"><span>BOM</span>배경 요소(산출 제외)</div>}
+                : <div className="v3d-info-r dim"><span>BOM</span>{sel.cutOnly ? "BOM 줄 없음 — Cut List 부재" : "배경 요소(산출 제외)"}</div>}
             </>
           ) : (
             <div className="v3d-info-hint">부재를 클릭하면 품명·규격이 표시됩니다 · 드래그 회전 · 우클릭 드래그 이동 · 휠 확대</div>
@@ -138,9 +138,9 @@ function PartMesh({ part, selected, hovered, onSelect, onHover }: {
       onPointerOver={part.context ? undefined : (e) => { stop(e); onHover(part.id); }}
       onPointerOut={part.context ? undefined : () => onHover(null)}
     >
-      {part.kind === "box"
-        ? <boxGeometry args={part.size} />
-        : <cylinderGeometry args={[part.size[0] / 2, part.size[0] / 2, part.size[1], 32]} />}
+      {part.kind === "box" && <boxGeometry args={part.size} />}
+      {part.kind === "cyl" && <cylinderGeometry args={[part.size[0] / 2, part.size[0] / 2, part.size[1], 48]} />}
+      {(part.kind === "ring" || part.kind === "rframe") && <HoledPlate part={part} />}
       <meshStandardMaterial
         color={color}
         metalness={part.mat === "CONCRETE" || part.mat === "EPDM" ? 0 : 0.55}
@@ -180,3 +180,26 @@ function CameraRig({ bounds, view, nonce }: { bounds: { min: Vec3; max: Vec3 }; 
   return <OrbitControls ref={controls} makeDefault enableDamping dampingFactor={0.12} />;
 }
 
+
+/** 가운데가 뚫린 판(원형 고리·사각 테). XY 평면 모양을 Z 방향으로 두께만큼 밀어 만든다. */
+function HoledPlate({ part }: { part: Part3D }) {
+  const geom = useMemo(() => {
+    const [w, h, t] = part.size;
+    const [hw, hh] = part.hole ?? [0, 0];
+    const shape = new Shape();
+    const hole = new Path();
+    if (part.kind === "ring") {
+      shape.absarc(0, 0, w / 2, 0, Math.PI * 2, false);
+      hole.absarc(0, 0, hw / 2, 0, Math.PI * 2, true);
+    } else {
+      shape.moveTo(-w / 2, -h / 2); shape.lineTo(w / 2, -h / 2); shape.lineTo(w / 2, h / 2); shape.lineTo(-w / 2, h / 2); shape.closePath();
+      hole.moveTo(-hw / 2, -hh / 2); hole.lineTo(-hw / 2, hh / 2); hole.lineTo(hw / 2, hh / 2); hole.lineTo(hw / 2, -hh / 2); hole.closePath();
+    }
+    shape.holes.push(hole);
+    const g = new ExtrudeGeometry(shape, { depth: t, bevelEnabled: false, curveSegments: 64 });
+    g.translate(0, 0, -t / 2);
+    return g;
+  }, [part.kind, part.size[0], part.size[1], part.size[2], part.hole?.[0], part.hole?.[1]]);
+  useEffect(() => () => geom.dispose(), [geom]);
+  return <primitive object={geom} attach="geometry" />;
+}
